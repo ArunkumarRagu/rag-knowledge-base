@@ -1,0 +1,9 @@
+This is a simple text file.
+
+You can write anything you want here.
+
+Line 1: Hello World
+Line 2: This is simple text
+Line 3: Easy to read and edit
+
+End of file.
