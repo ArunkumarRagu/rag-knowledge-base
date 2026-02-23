@@ -2,6 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { pool } from '../db';
 import { randomUUID } from 'crypto';
 import { chunkText } from '../chunking/chunker';
+import { generateEmbedding } from '../embedding/embedding.client';
 
 @Injectable()
 export class DocumentsService {
@@ -28,15 +29,16 @@ export class DocumentsService {
 
     // 2️⃣ Chunk text
     const chunks = chunkText(text);
-
     // 3️⃣ Insert chunks
     for (const chunk of chunks) {
+      const embedding = await generateEmbedding(chunk.content);
+      const embeddingStr = JSON.stringify(embedding);
       await pool.query(
         `
-        INSERT INTO "DocumentChunk"(id, "documentId", content, "createdAt")
-        VALUES ($1, $2, $3, now())
+        INSERT INTO "DocumentChunk"(id, "documentId", content, embedding, "createdAt")
+        VALUES ($1, $2, $3, $4::vector, now())
         `,
-        [randomUUID(), documentId, chunk.content],
+        [randomUUID(), documentId, chunk.content, embeddingStr],
       );
     }
 
