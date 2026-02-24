@@ -4,12 +4,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DocumentsService } from './documents/documents.service';
 import { DocumentsController } from './documents/documents.controller';
-
+import { SearchModule } from './search/search.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    SearchModule,
   ],
   controllers: [AppController, DocumentsController],
   providers: [AppService, DocumentsService],
